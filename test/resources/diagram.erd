@@ -1,0 +1,27 @@
+# Users table that only contains login info
+[user]
+*id
+username
+hashed_password
+
+# This one contains other information about the user
+[user_info]
+*id
++user_id
+email
+bio
+date_of_birth
+registered_date
+
+user_info 1--1 user
+
+# Posts (a thread starts on a post without a parent)
+[post]
+*id
++poster
++parent
+content
+timestamp
+
+post *--1 post
+post *--1 user
