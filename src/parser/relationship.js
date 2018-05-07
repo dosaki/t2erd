@@ -1,4 +1,4 @@
-const parserUtils = require("./utils/parser_utils.js");
+const parserUtils = require("../utils/parser_utils.js");
 
 const Relationship = function(line){
   const _self = this;

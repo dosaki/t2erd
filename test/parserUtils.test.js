@@ -1,7 +1,7 @@
 const assert = require('assert');
 const fs = require('fs');
 
-const utils = require("../src/parser/utils/parser_utils.js");
+const utils = require("../src/utils/parser_utils.js");
 
 describe('ParserUtils', function() {
   describe('isCommentLine', function() {

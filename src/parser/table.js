@@ -1,4 +1,4 @@
-const parserUtils = require("./utils/parser_utils.js");
+const parserUtils = require("../utils/parser_utils.js");
 const Column = require("./column.js");
 
 const Table = function(line){

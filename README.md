@@ -1,14 +1,16 @@
 # Text 2 ER Diagram
 Currently **Work In Progress**!
+Don't use this yet.
 
-TODO:
+## To do:
   - [x] Draw tables
   - [ ] Draw relationships
   - [ ] Support colours
   - [ ] Probably better tests
+  - [ ] Support custom dimensions / positions
 
 Issues:
-  - [ ] Fix dimension calculations
+  - [x] Fix dimension calculations
 
 # Usage
 

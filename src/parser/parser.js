@@ -1,4 +1,4 @@
-const parseUtils = require("./utils/parser_utils.js");
+const parseUtils = require("../utils/parser_utils.js");
 const Table = require("./table.js")
 const Relationship = require("./relationship.js")
 
