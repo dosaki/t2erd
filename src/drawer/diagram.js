@@ -56,9 +56,9 @@ const Diagram = function(parser, params){
       }
     };
     parser.tables.forEach((table) => {
-      _self.tables.push(new DiagramTable(table, _properties.tableOptions, _labelFonts));
+      _self.tables.push(new DiagramTable(table, parser.relationships, _properties.tableOptions, _labelFonts));
     });
-  }
+  };
 
   const init = function (parser, params) {
     preInit(parser, params);
@@ -78,7 +78,7 @@ const Diagram = function(parser, params){
     });
 
     return dimensions;
-  }
+  };
 
   const draw = (parser, props) => {
     let drawing = svg.newInstance();

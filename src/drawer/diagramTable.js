@@ -2,16 +2,18 @@ const pixelDimensions = require('../utils/dimension_utils.js');
 const paramUtils = require('../utils/param_utils.js');
 const DiagramColumn = require('./diagramColumn.js');
 
-const DiagramTable = function(table, tableOptions, fontOptions){
+const DiagramTable = function(table, relationships, tableOptions, fontOptions){
   const _self = this;
   let _table = null;
   let _options = null;
+  let _parsedRelationships = [];
+  let _outgoingRelationships = null;
   _self.dimensions = null;
   _self.position = null;
   _self.title = null;
-  _self.columns = null
+  _self.columns = null;
 
-  const init = function (table, tableOptions, fontOptions) {
+  const init = function (table, relationships, tableOptions, fontOptions) {
     _table = table;
     _options = tableOptions;
     _fonts = fontOptions;
@@ -24,6 +26,11 @@ const DiagramTable = function(table, tableOptions, fontOptions){
     _self.columns = [];
     table.columns.forEach((column) => {
       _self.columns.push(new DiagramColumn(column, _self, fontOptions));
+    });
+    relationships.forEach((relationship) => {
+      if(_table.name === relationship.table1 || _table.name === relationship.table2){
+        _parsedRelationships.push(relationship);
+      }
     });
   };
 
@@ -53,6 +60,14 @@ const DiagramTable = function(table, tableOptions, fontOptions){
   _self.getParsedTable = () => {
     return _table;
   };
+
+  _self.outgoingRelationships = (nocache) => {
+    if(_outgoingRelationships === null || nocache){
+      //We already know one of them is equal to _table.name so we just need to check if they're the same
+      _outgoingRelationships = _parsedRelationships.filter(relationship => relationship.table1 !== relationship.table2);
+    }
+    return !_outgoingRelationships ? [] : _outgoingRelationships;
+  }
 
   _self.draw = (drawing, x, y) => {
     const _x = !!_self.position.x ? _self.position.x : x;
@@ -86,7 +101,7 @@ const DiagramTable = function(table, tableOptions, fontOptions){
     });
   };
 
-  init(table, tableOptions, fontOptions);
+  init(table, relationships, tableOptions, fontOptions);
 };
 
 module.exports = DiagramTable;
