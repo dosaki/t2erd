@@ -18,7 +18,7 @@ const CentredMatrix = function(centreItem){
     }
     else if(preAdjustY >= _positions.length){
       for(let i = 0; i<adjustmentY; i++){
-        _positions.push([]);
+        _positions.push([null]);
       }
     }
     const adjustedY = actual('y', y);
@@ -28,15 +28,46 @@ const CentredMatrix = function(centreItem){
     if(preAdjustX < 0){
       _centre.x += Math.abs(x + _centre.x);
       for(let i = 0; i<adjustmentX; i++){
-        _positions[adjustedY].unshift(null);
+        _positions.forEach(position => {
+          position.unshift(null);
+        });
       }
     }
     else if(preAdjustX >= _positions[adjustedY].length){
       for(let i = 0; i<adjustmentX; i++){
-        _positions[adjustedY].push(null);
+        _positions.forEach(position => {
+          position.push(null);
+        });
       }
     }
   };
+
+  const trimMatrix = () => {
+    if(_positions[_positions.length-1].filter(slot => slot !== null).length === 0){
+      _positions.pop(_positions.length-1);
+    }
+    let foundObject = {};
+    for(let rowIt=_positions[0].length-1; rowIt >= 0 ; rowIt--){
+      foundObject[rowIt] = false;
+      for(let colIt=0; colIt < _positions.length; colIt++){
+        if(_positions[colIt][rowIt] !== null && _positions[colIt][rowIt] !== undefined){
+          foundObject[rowIt] = true;
+        }
+      }
+    }
+
+    for(let rowIt=_positions[0].length-1; rowIt >= 0 ; rowIt--){
+      for(let colIt=0; colIt < _positions.length; colIt++){
+        if(!foundObject[rowIt]){
+          console.log(`Popping ${rowIt} ${colIt} => ${_positions[colIt][rowIt]}`);
+          if(_positions[colIt][rowIt] !== undefined){
+            _positions[colIt].pop(rowIt);
+            console.log("Popped.");
+          }
+        }
+      }
+    }
+  }
 
   const init = (centralItem) => {
     if(centreItem === undefined){
@@ -64,8 +95,11 @@ const CentredMatrix = function(centreItem){
   };
 
   _self.getPlainMatrix = () => {
+    trimMatrix();
     return _positions;
   }
+
+  init(centreItem);
 };
 
 module.exports = CentredMatrix;
