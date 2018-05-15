@@ -2,6 +2,7 @@ const CentredMatrix = function(centreItem){
   _self = this;
   const _positions = [[undefined]];
   let _centre = {x:0, y:0};
+  let _items {};
 
   const actual = (axis, axisValue) => {
     return axisValue + _centre[axis];
@@ -49,11 +50,33 @@ const CentredMatrix = function(centreItem){
       throw new Error("Matrix needs to be initialized with a central item!")
     }
     _positions[_centre.y][_centre.x] = centreItem;
+  };
+
+  const isEmpty = (item) => {
+    return !(item === undefined || item === null);
   }
+
+  _self.includes = (item) => {
+    return Object.keys(_items).includes(item);
+  };
+
+  _self.coordinatesOf = (item) => {
+    return _items[item];
+  };
+
+  _self.isFree = (x, y) => {
+    return isEmpty(_self.get(x, y));
+  };
 
   _self.push = (x, y, item) => {
     fixMatrix(x, y);
+    _items[item] = {x:x, y:y};
     _positions[actual('y', y)][actual('x', x)] = item;
+
+    let existingItem = _self.get(x, y)
+    if(!isEmpty(existingItem)){
+      delete _items[existingItem];
+    }
   };
 
   _self.get = (x, y) => {
