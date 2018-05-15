@@ -13,11 +13,11 @@ const CentredMatrix = function(centreItem){
     if(preAdjustY < 0){
       _centre.y += Math.abs(y + _centre.y);
       for(let i = 0; i<adjustmentY; i++){
-        _positions.unshift([]);
+        _positions.unshift([null]);
       }
     }
     else if(preAdjustY >= _positions.length){
-      for(let i = 0; i<adjustmentY; i++){
+      for(let i = 0; i<adjustmentY - (_positions.length-1); i++){
         _positions.push([null]);
       }
     }
@@ -34,40 +34,15 @@ const CentredMatrix = function(centreItem){
       }
     }
     else if(preAdjustX >= _positions[adjustedY].length){
-      for(let i = 0; i<adjustmentX; i++){
+      for(let i = 0; i<adjustmentX - (_positions[adjustedY].length-1); i++){
         _positions.forEach(position => {
-          position.push(null);
+          if(position.length <= preAdjustX){
+            position.push(null);
+          }
         });
       }
     }
   };
-
-  const trimMatrix = () => {
-    if(_positions[_positions.length-1].filter(slot => slot !== null).length === 0){
-      _positions.pop(_positions.length-1);
-    }
-    let foundObject = {};
-    for(let rowIt=_positions[0].length-1; rowIt >= 0 ; rowIt--){
-      foundObject[rowIt] = false;
-      for(let colIt=0; colIt < _positions.length; colIt++){
-        if(_positions[colIt][rowIt] !== null && _positions[colIt][rowIt] !== undefined){
-          foundObject[rowIt] = true;
-        }
-      }
-    }
-
-    for(let rowIt=_positions[0].length-1; rowIt >= 0 ; rowIt--){
-      for(let colIt=0; colIt < _positions.length; colIt++){
-        if(!foundObject[rowIt]){
-          console.log(`Popping ${rowIt} ${colIt} => ${_positions[colIt][rowIt]}`);
-          if(_positions[colIt][rowIt] !== undefined){
-            _positions[colIt].pop(rowIt);
-            console.log("Popped.");
-          }
-        }
-      }
-    }
-  }
 
   const init = (centralItem) => {
     if(centreItem === undefined){
@@ -95,11 +70,11 @@ const CentredMatrix = function(centreItem){
   };
 
   _self.getPlainMatrix = () => {
-    trimMatrix();
     return _positions;
   }
 
   init(centreItem);
 };
+
 
 module.exports = CentredMatrix;
