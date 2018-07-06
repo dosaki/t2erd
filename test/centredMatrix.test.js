@@ -41,7 +41,6 @@ describe('CentredMatrix', function() {
     matrix.push(0,1,   "Bottom");
     matrix.push(-1,1,  "Bottom Left");
     vanillaMatrix = matrix.getPlainMatrix();
-    console.log(vanillaMatrix);
     assert.equal(vanillaMatrix.length, 3);
     assert.equal(vanillaMatrix[0].length, 3);
     assert.equal(vanillaMatrix[1].length, 3);

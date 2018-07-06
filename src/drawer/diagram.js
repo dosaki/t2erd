@@ -2,6 +2,7 @@ const svg = require('svg-builder');
 
 const paramUtils = require('../utils/param_utils.js');
 const DiagramTable = require('./diagramTable.js');
+const DiagramLayout = require('./diagramLayout.js');
 
 const Diagram = function(parser, params){
   const _self = this;
@@ -62,7 +63,9 @@ const Diagram = function(parser, params){
 
   const init = function (parser, params) {
     preInit(parser, params);
-    _self.svg = draw(parser, _properties);
+    const layout = new DiagramLayout(_self.tables);
+    // _self.svg = draw(_properties);
+    _self.svg = drawWithLayout(layout, _properties)
   };
 
   const calculateDimensions = (tableOptions, padding) => {
@@ -80,7 +83,47 @@ const Diagram = function(parser, params){
     return dimensions;
   };
 
-  const draw = (parser, props) => {
+  const calculateMaxTableDimensions = (tableOptions, padding) => {
+    const maxTableDimensions = {
+      width: 0,
+      height: 0
+    };
+    _self.tables.forEach((table) => {
+      maxTableDimensions.width = Math.max(maxTableDimensions.width, table.dimensions.width + (tableOptions.margin * 2));
+      maxTableDimensions.height = Math.max(maxTableDimensions.height, table.dimensions.height + (tableOptions.margin * 2));
+    });
+
+    return maxTableDimensions;
+  };
+
+  const drawWithLayout = (layout, props) => {
+    const drawing = svg.newInstance();
+    const maxTableDimensions = calculateMaxTableDimensions(props.tableOptions,props.padding);
+    const layoutDimensions = layout.calculateDimensions(maxTableDimensions);
+    drawing.width(layoutDimensions.width).height(layoutDimensions.height);
+    console.log(maxTableDimensions);
+    const matrix = layout.toMatrix();
+
+    matrix.forEach((row, yi) => {
+      row.forEach((table, xi) => {
+        if(!!table){
+          const x = xi*maxTableDimensions.width;
+          const y = yi*maxTableDimensions.height;
+          table.draw(drawing, x, y);
+
+          let nextColY = y + props.tableOptions.padding + table.dimensions.labelHeight*2;
+          table.columns.forEach((column) => {
+            column.draw(drawing, x, nextColY, props.tableOptions.padding)
+            nextColY += (table.dimensions.columnLabelHeight);
+          });
+        }
+      });
+    });
+
+    return drawing;
+  }
+
+  const draw = (props) => {
     let drawing = svg.newInstance();
     const dimensions = calculateDimensions(props.tableOptions,props.padding);
 

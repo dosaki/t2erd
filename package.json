@@ -11,7 +11,8 @@
     "minimist": "^1.2.0",
     "string-pixel-width": "^1.5.0",
     "svg-builder": "^1.0.0",
-    "svg-to-img": "^2.0.7"
+    "svg-to-img": "^2.0.7",
+    "uuid": "^3.2.1"
   },
   "devDependencies": {
     "mocha": "^5.1.1"

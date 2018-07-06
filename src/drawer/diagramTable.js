@@ -10,7 +10,7 @@ const DiagramTable = function(table, relationships, tableOptions, fontOptions){
   let _outgoingRelationships = null;
   _self.dimensions = null;
   _self.position = null;
-  _self.title = null;
+  _self.name = null;
   _self.columns = null;
 
   const init = function (table, relationships, tableOptions, fontOptions) {
@@ -69,6 +69,19 @@ const DiagramTable = function(table, relationships, tableOptions, fontOptions){
     return !_outgoingRelationships ? [] : _outgoingRelationships;
   }
 
+  _self.outgoingRelationshipTables = (tables, nocache) => {
+    if(!tables || tables.length === 0){
+      return [];
+    }
+    const relationships = _self.outgoingRelationships(nocache);
+    let outgoingTables = [];
+    relationships.forEach(relationship => {
+      const name = relationship.table1 !== _table.name ? relationship.table1 : relationship.table2;
+      outgoingTables.push(tables.filter(table => table.name === name)[0]);
+    });
+    return outgoingTables;
+  }
+
   _self.draw = (drawing, x, y) => {
     const _x = !!_self.position.x ? _self.position.x : x;
     const _y = !!_self.position.y ? _self.position.y : y
@@ -100,6 +113,10 @@ const DiagramTable = function(table, relationships, tableOptions, fontOptions){
       stroke:"gray"
     });
   };
+
+  _self.toString = () => {
+    return _self.name;
+  }
 
   init(table, relationships, tableOptions, fontOptions);
 };
