@@ -235,6 +235,10 @@ const CentredMatrix = function(centreItem) {
     return _positions.length;
   }
 
+  _self.getItems = () => {
+    _positions.reduce((acc, val) => acc.concat(val), []).filter((item) => item !== null);
+  }
+
   init(centreItem);
 };
 

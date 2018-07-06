@@ -15,7 +15,6 @@ if(!!input){
     if (err) throw err;
 
     const diagram = new Diagram(new Parser(data), {});
-    console.log(diagram.toString());
     (async () => {
       const image = await svgToImg.from(diagram.toString()).toPng({
         path: output

@@ -29,9 +29,6 @@ const DiagramLayout = function(tables, params){
       }
       _layout.push(freeSpot.x, freeSpot.y, table);
       resolveConnectedTables(table);
-      // console.log(_self.asString(true));
-      // console.log(_layout.coordinatesOf(mostConnectedTable).x, _layout.coordinatesOf(mostConnectedTable).y);
-      console.log(freeSpot.x, freeSpot.y);
       table = findMostConnectedTable(mostConnectedTable.outgoingRelationshipTables(tables), _layout);
     }
   };
@@ -41,7 +38,6 @@ const DiagramLayout = function(tables, params){
     let coords = _layout.findClosestFreeSpot(0,0);
 
     _layout.push(coords.x,coords.y, mostConnectedTable);
-    console.log(">>>", mostConnectedTable.name);
     resolveConnectedTables(mostConnectedTable, tables);
 
     const otherTables = tables.filter(table => !_layout.includes(table));
@@ -86,6 +82,10 @@ const DiagramLayout = function(tables, params){
   _self.toMatrix = () => {
     return _layout.getPlainMatrix();
   };
+
+  _self.getAllTables = () => {
+    return _tables;
+  }
 
   init(tables);
 };

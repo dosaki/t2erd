@@ -1,5 +1,6 @@
 const pixelDimensions = require('../utils/dimension_utils.js');
 const paramUtils = require('../utils/param_utils.js');
+const geometryUtils = require('../utils/geometry_utils.js');
 const DiagramColumn = require('./diagramColumn.js');
 
 const DiagramTable = function(table, relationships, tableOptions, fontOptions){
@@ -67,7 +68,7 @@ const DiagramTable = function(table, relationships, tableOptions, fontOptions){
       _outgoingRelationships = _parsedRelationships.filter(relationship => relationship.table1 !== relationship.table2);
     }
     return !_outgoingRelationships ? [] : _outgoingRelationships;
-  }
+  };
 
   _self.outgoingRelationshipTables = (tables, nocache) => {
     if(!tables || tables.length === 0){
@@ -80,11 +81,41 @@ const DiagramTable = function(table, relationships, tableOptions, fontOptions){
       outgoingTables.push(tables.filter(table => table.name === name)[0]);
     });
     return outgoingTables;
-  }
+  };
+
+  _self.setPosition = (x, y) => {
+    _self.position.x =  x;
+    _self.position.y =  y;
+  };
+
+  _self.getCentrePosition = () => {
+    return {
+      x: _self.position.x + (_self.dimensions.width/2),
+      y: _self.position.y + (_self.dimensions.height/2)
+    }
+  };
+
+  _self.getLeveledCentrePosition = () => {
+    return {
+      x: _self.position.x + (_self.dimensions.width/2),
+      y: _self.position.y + _options.padding*1.5
+    }
+  };
+
+  _self.getClosestPerimeterCoordinate = (coords) => {
+    const point = geometryUtils.getNearestPointInPerimeter(
+      _self.position.x, _self.position.y,
+      _self.dimensions.width, _self.dimensions.height,
+      coords.x, coords.y);
+    return {
+      x: point[0],
+      y: point[1]
+    }
+  };
 
   _self.draw = (drawing, x, y) => {
-    const _x = !!_self.position.x ? _self.position.x : x;
-    const _y = !!_self.position.y ? _self.position.y : y
+    const _x = !x ? _self.position.x : x;
+    const _y = !y ? _self.position.y : y;
     drawing.rect({
       x: _x,
       y: _y,
@@ -116,7 +147,7 @@ const DiagramTable = function(table, relationships, tableOptions, fontOptions){
 
   _self.toString = () => {
     return _self.name;
-  }
+  };
 
   init(table, relationships, tableOptions, fontOptions);
 };
