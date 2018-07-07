@@ -1,6 +1,7 @@
 const svg = require('svg-builder');
 
 const paramUtils = require('../utils/param_utils.js');
+const geometryUtils = require('../utils/geometry_utils.js');
 const DiagramTable = require('./diagramTable.js');
 const DiagramLayout = require('./diagramLayout.js');
 
@@ -8,6 +9,7 @@ const Diagram = function(parser, params){
   const _self = this;
   let _properties = {};
   let _labelFonts = {};
+  let _layout = null;
   _self.svg = null;
   _self.tables = [];
   _self.connections = [];
@@ -61,14 +63,14 @@ const Diagram = function(parser, params){
       _self.tables.push(new DiagramTable(table, parser.relationships, _properties.tableOptions, _labelFonts));
     });
     _self.connections = parser.relationships;
+    _layout = new DiagramLayout(_self.tables, {layoutDefinition: parser.layoutDefinition});
   };
 
   const init = function (parser, params) {
     preInit(parser, params);
-    const layout = new DiagramLayout(_self.tables);
-    _self.svg = setupDrawing(layout, _properties);
-    calculatePositions(layout, _properties, _self.svg);
-    draw(layout, _properties, _self.svg);
+    _self.svg = setupDrawing(_layout, _properties);
+    calculatePositions(_layout, _properties, _self.svg);
+    draw(_layout, _properties, _self.svg);
   };
 
   const calculateMaxTableDimensions = (tableOptions, padding) => {
@@ -137,6 +139,21 @@ const Diagram = function(parser, params){
         if(table1 !== table2){
           const t1pos = table1.getClosestPerimeterCoordinate(table2.getLeveledCentrePosition());
           const t2pos = table2.getClosestPerimeterCoordinate(table1.getLeveledCentrePosition());
+
+          const slope = geometryUtils.slope(t1pos, t2pos);
+          if(geometryUtils.orientation.isMostlyDiagonal(t1pos, t2pos, 0.8)){
+            //This is left here for debugging purposes.
+          }
+          else if(geometryUtils.orientation.isMostlyVertical(t1pos, t2pos, 2)){
+            const xAverage = (t1pos.x + t2pos.x)/2;
+            t1pos.x = xAverage;
+            t2pos.x = xAverage;
+          }
+          else if(geometryUtils.orientation.isMostlyHorizontal(t1pos, t2pos, 0.5)){
+            const yAverage = (t1pos.y + t2pos.y)/2;
+            t1pos.y = yAverage;
+            t2pos.y = yAverage;
+          }
 
           const textSize = 16;
           const t1size = connection.t1Cardinality == "*" ? textSize*1.5: textSize;

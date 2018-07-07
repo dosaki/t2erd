@@ -19,6 +19,7 @@ const DiagramTable = function(table, relationships, tableOptions, fontOptions){
     _options = tableOptions;
     _fonts = fontOptions;
     _self.name = table.name;
+    _self.alias = table.alias;
     _self.dimensions = calculateDimensions();
     _self.position = {
       x: !!tableOptions.x && !paramUtils.isAuto(tableOptions.x) ? tableOptions.x : null,

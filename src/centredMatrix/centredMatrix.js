@@ -15,7 +15,7 @@ const CentredMatrix = function(centreItem) {
   let _items = {};
 
   const itemUUID = (item) => {
-    if(!item.__uuid){
+    if(!!item && !item.__uuid){
       item.__uuid = !!item.name ? uuidv5(item.name, _uuid_namespace) : uuidv4();
     }
     return item.__uuid
@@ -178,7 +178,7 @@ const CentredMatrix = function(centreItem) {
   };
 
   _self.includes = (item) => {
-    if(!item.__uuid){
+    if(!item || !item.__uuid){
       return false;
     }
     return _self.items().includes(item.__uuid);
@@ -196,17 +196,19 @@ const CentredMatrix = function(centreItem) {
   };
 
   _self.push = (x, y, item) => {
-    fixMatrix(x, y);
-    _items[itemUUID(item)] = {
-      x: x,
-      y: y,
-      item: item
-    };
-    let existingItem = _self.get(x, y);
-    _positions[actual('y', y)][actual('x', x)] = item;
+    if(!!item){
+      fixMatrix(x, y);
+      _items[itemUUID(item)] = {
+        x: x,
+        y: y,
+        item: item
+      };
+      let existingItem = _self.get(x, y);
+      _positions[actual('y', y)][actual('x', x)] = item;
 
-    if (!isEmpty(existingItem)) {
-      delete _items[existingItem.__uuid];
+      if (!isEmpty(existingItem)) {
+        delete _items[existingItem.__uuid];
+      }
     }
   };
 

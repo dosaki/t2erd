@@ -1,27 +1,35 @@
-# Users table that only contains login info
-[user]
-*id
-username
+# This is a comment lines
+
+# Below is a table definition
+[user] - u      # This is the name of the table followed by an alias (to be used in the diagram later)
+*id             # This is a primary key
+username        # This is a regular column of a table
 hashed_password
 
-# This one contains other information about the user
-[user_info]
+[user_info] - i
 *id
-+user_id
++user_id        # This is a foreign key
 email
 bio
 date_of_birth
 registered_date
 
-user_info 1--1 user
+user_info 1--1 user # This is a one to one relationship declaration
 
-# Posts (a thread starts on a post without a parent)
-[post]
+[post] - p
 *id
 +poster
 +parent
 content
 timestamp
 
-post *--1 post
+post *--1 post # This is a many to one relationship declaration
 post *--1 user
+
+# below we declare how the tables are laid out via their aliases
+|p| |
+|u|i|
+
+# It's also possible to do it with their names, but then it's not as pretty:
+#|post|         |
+#|user|user_info|

@@ -1,20 +1,21 @@
 # Text 2 ER Diagram
-Currently **Work In Progress**!
-Don't use this yet.
+Currently **Work In Progress** but I guess it's ok to use.
 
 ## To do:
   - [x] Draw tables
-  - [ ] Draw relationships
+  - [x] Draw relationships
   - [ ] Support colours
-  - [ ] Probably better tests
-  - [ ] Support custom dimensions / positions
+  - [x] Support custom positions
+  - [ ] Support custom table dimensions
 
 Issues:
   - [x] Fix dimension calculations
 
 # Usage
 
-As a CLI tool it automatically converts the SVG into a PNG. In addition it will print the SVG code to the terminal.
+As a CLI tool, it automatically converts the ERD into an SVG and then into a PNG. In addition it will print the SVG code to the terminal.
+
+Usage:
 ```
 ./src/t2erd.js -i=/path/to/input.erd -o=/path/to/ouput.png
 ```
@@ -26,10 +27,15 @@ const svgString = t2erd(diagramTextHere);
 ```
 
 # Syntax
+*Borrowed some of the syntax from https://github.com/BurntSushi/erd*
 ## Comments
 Comments start with `#` and are ignored by the parser.
 ```
 # Comment
+```
+Anything to the right of a `#` is also a comment
+```
+Foo # Comment
 ```
 
 ## Tables
@@ -43,26 +49,46 @@ column
 +foreign key
 ```
 
+You can optionally specify an alias for the table name (to make it easier for layout definition) by adding any text after a ` - ` (`space` `dash` `space`).
+```
+[Table1Name] - t1
+*primary key
+column
++foreign key
+```
+
 ## Table Relationships
 
 Table relationships are declared with a table name followed by the cardinality a double dash, the other table cardinality and the table it links to.
+```
+table1 *--1 table2
+```
+Supported cardinality characters are:
+* `*` for many
+* `1` for one
 
-They can be declared anywhere even in the middle of table column definitions.
+These can be declared anywhere even in the middle of table column definitions.
 
+## Layouts
+Any line starting with a `|` is added to a layout in order of appearance:
+```
+|p| |
+|u|i|
+```
+Where `|` is the divider between the tables and between a set of `|` is a table name or alias.
 
-*Borrowed some of the syntax from https://github.com/BurntSushi/erd*
-
+They can be interrupted by other definitions.
 
 ## Example
 ```
 # Users table that only contains login info
-[user]
+[user] - u
 *id
 username
 hashed_password
 
 # This one contains other information about the user
-[user_info]
+[user_info] - i
 *id
 +user_id
 email
@@ -73,7 +99,7 @@ registered_date
 user_info 1--1 user
 
 # Posts (a thread starts on a post without a parent)
-[post]
+[post] - p
 *id
 +poster
 +parent
@@ -82,4 +108,7 @@ timestamp
 
 post *--1 post
 post *--1 user
+
+|p| |
+|u|i|
 ```

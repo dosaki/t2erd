@@ -21,4 +21,32 @@ const getNearestPointInPerimeter = (l, t, w, h, x, y) => {
   return m === dt ? [newX, t] : m === db ? [newX, b] : m === dl ? [l, newY] : [r, newY];
 }
 
+const lineSlope = (coords1, coords2) => {
+  return (coords1.y - coords2.y) / (coords1.x - coords2.x);
+}
+
+const isMostlyVertical = (coords1, coords2, tolerance) => {
+  const slope = lineSlope(coords1, coords2);
+  return slope === Infinity || Math.abs(slope) >= tolerance;
+}
+
+const isMostlyHorizontal = (coords1, coords2, tolerance) => {
+  return Math.abs(lineSlope(coords1, coords2)) <= tolerance;
+}
+
+const isMostlyDiagonal = (coords1, coords2, tolerance) => {
+  const slope = lineSlope(coords1, coords2);
+  if(tolerance === 0){
+    return slope === 1;
+  }
+
+  return 1 - Math.abs(slope) <= tolerance && 1 - Math.abs(slope) >= -1*tolerance;
+}
+
 module.exports.getNearestPointInPerimeter = getNearestPointInPerimeter;
+module.exports.slope = lineSlope;
+module.exports.orientation = {
+  isMostlyVertical: isMostlyVertical,
+  isMostlyHorizontal: isMostlyHorizontal,
+  isMostlyDiagonal: isMostlyDiagonal
+};

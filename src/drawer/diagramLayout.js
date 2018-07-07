@@ -1,7 +1,6 @@
 const CentredMatrix = require('../centredMatrix/centredMatrix.js')
 
 const DiagramLayout = function(tables, params){
-  //TODO: Use params to let people specify their own layout
   const _self = this;
   const _layout = new CentredMatrix(null);
   let _tables = [];
@@ -46,11 +45,27 @@ const DiagramLayout = function(tables, params){
     }
   };
 
-  const init = (tables) => {
+  const init = (tables, params) => {
     _tables = tables;
-    resolveRelativePositions(_tables);
+    if(!!params && !!params.layoutDefinition && params.layoutDefinition.length > 0){
+      params.layoutDefinition.forEach((row, yind) => {
+        row.forEach((nameOrAlias, xind) => {
+          const table = _tables.filter((table) => {
+            return table.name === nameOrAlias || table.alias === nameOrAlias;
+          });
+          if(table.length > 1){
+            throw new Error(`Duplicate table name or alias reference: "${nameOrAlias}"!`)
+          }
+          else if(table.length === 1){
+            _layout.push(xind, yind, table[0]);
+          }
+        });
+      });
+    }
+    else {
+      resolveRelativePositions(_tables);
+    }
   };
-
 
   _self.calculateDimensions = (maxTableDimensions) => {
     return {
@@ -87,7 +102,7 @@ const DiagramLayout = function(tables, params){
     return _tables;
   }
 
-  init(tables);
+  init(tables, params);
 };
 
 module.exports = DiagramLayout;
