@@ -10,12 +10,12 @@ const KEY_INDICATOR = {
   foreign: '+'
 }
 const LAYOUT_LINE = "|";
-const TABLE_ALIAS_SEPARATOR = " - ";
+const TABLE_ALIAS_SEPARATOR = "-";
 
 const isTableNameDefinition = (rawLine) => {
   const line = rawLine.trim();
-  const splitDefinition = line.split(TABLE_ALIAS_SEPARATOR);
-  return splitDefinition[0].startsWith(TABLE_CHARACTER.start) && splitDefinition[0].endsWith(TABLE_CHARACTER.end);
+  const splitDefinition = line.split(TABLE_ALIAS_SEPARATOR)[0].trim();
+  return splitDefinition.startsWith(TABLE_CHARACTER.start) && splitDefinition.endsWith(TABLE_CHARACTER.end);
 }
 
 const findRelationshipLine = (rawLine) => {

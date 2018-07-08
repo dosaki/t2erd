@@ -4,12 +4,11 @@ Currently **Work In Progress** but I guess it's ok to use.
 ## To do:
   - [x] Draw tables
   - [x] Draw relationships
+  - [ ] Draw self-referencial relationships
   - [ ] Support colours
   - [x] Support custom positions
   - [ ] Support custom table dimensions
 
-Issues:
-  - [x] Fix dimension calculations
 
 # Usage
 
@@ -49,7 +48,7 @@ column
 +foreign key
 ```
 
-You can optionally specify an alias for the table name (to make it easier for layout definition) by adding any text after a ` - ` (`space` `dash` `space`).
+You can optionally specify an alias for the table name (to make it easier for layout definition) by adding any text after a `-` (any whitespace is ignored).
 ```
 [Table1Name] - t1
 *primary key
@@ -70,6 +69,9 @@ Supported cardinality characters are:
 These can be declared anywhere even in the middle of table column definitions.
 
 ## Layouts
+You can specify how you want the tables to be organized by declaring a layout.
+If your diagram is too complex I'd recommend using this since the automatic position calculations might not organize things the tables in the best way.
+
 Any line starting with a `|` is added to a layout in order of appearance:
 ```
 |p| |
