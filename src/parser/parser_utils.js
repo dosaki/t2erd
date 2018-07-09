@@ -1,6 +1,7 @@
 const COMMENT_CHARACTER = '#';
+const COMMENT_CHARACTER_REGEX = /#(?![^\"]*")/;
 const RELATIONSHIP_LINE = "--";
-const RELATIONSHIP_LINE_REGEX = / (\*|\d*)--(\*|\d*) /;
+const RELATIONSHIP_LINE_REGEX = / (\*|\d+)--(\*|\d+) /;
 const TABLE_CHARACTER = {
   start: '[',
   end: ']'
@@ -10,7 +11,7 @@ const KEY_INDICATOR = {
   foreign: '+'
 }
 const LAYOUT_LINE = "|";
-const TABLE_ALIAS_SEPARATOR = "-";
+const TABLE_ALIAS_SEPARATOR = /-(?![^\[]*])/;
 
 const isTableNameDefinition = (rawLine) => {
   const line = rawLine.trim();
@@ -45,7 +46,9 @@ const isColumn = (rawLine, currentTable) => {
   const line = rawLine.trim();
   return !isTableNameDefinition(line)
       && !isRelationship(line)
-      && currentTable !== null;
+      && !isLayoutLine(line)
+      && !isCommentLine(line)
+      && (currentTable === 0 || !!currentTable);
 }
 
 const stripComments = (rawLine) => {
