@@ -26,9 +26,9 @@ const DiagramColumn = function(parsedColumn, table, fontOptions){
     if(_font.underlined){
       drawing.line({
         x1: x + padding,
-        y1: y + (_table.dimensions.columnLabelHeight/3),
-        x2: x + pixelDimensions(_self.name + "  ", _font).width,
-        y2: y + (_table.dimensions.columnLabelHeight/3),
+        y1: y + (_table.dimensions.columnLabelHeight/3) - 2,
+        x2: x + pixelDimensions(_self.name, _font).width,
+        y2: y + (_table.dimensions.columnLabelHeight/3) - 2,
         stroke:"black"
       });
     }

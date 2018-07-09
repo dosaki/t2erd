@@ -4,7 +4,7 @@ Currently **Work In Progress** but I guess it's ok to use.
 ## To do:
   - [x] Draw tables
   - [x] Draw relationships
-  - [ ] Draw self-referential relationships
+  - [x] Draw self-referential relationships
   - [ ] Support relationship declarations via table aliases
   - [ ] Support colours
   - [x] Support custom positions

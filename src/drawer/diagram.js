@@ -4,6 +4,7 @@ const paramUtils = require('../utils/param_utils.js');
 const geometryUtils = require('../utils/geometry_utils.js');
 const DiagramTable = require('./diagramTable.js');
 const DiagramLayout = require('./diagramLayout.js');
+const DiagramRelationship = require('./diagramRelationship.js');
 
 const Diagram = function(parser, params){
   const _self = this;
@@ -18,7 +19,7 @@ const Diagram = function(parser, params){
     _properties = paramUtils.resolveParams(params, {
       height: "auto",
       width: "auto",
-      padding: 15,
+      padding: 40,
       fontOptions: {
         font: 'Andale Mono',
         size: 12
@@ -62,7 +63,11 @@ const Diagram = function(parser, params){
     parser.tables.forEach((table) => {
       _self.tables.push(new DiagramTable(table, parser.relationships, _properties.tableOptions, _labelFonts));
     });
-    _self.connections = parser.relationships;
+    parser.relationships.forEach((connection) => {
+      const table1 = _self.findDiagramTableByParsedTable(connection.table1);
+      const table2 = _self.findDiagramTableByParsedTable(connection.table2);
+      _self.connections.push(new DiagramRelationship(connection, table1, table2));
+    });
     _layout = new DiagramLayout(_self.tables, {layoutDefinition: parser.layoutDefinition});
   };
 
@@ -73,7 +78,7 @@ const Diagram = function(parser, params){
     draw(_layout, _properties, _self.svg);
   };
 
-  const calculateMaxTableDimensions = (tableOptions, padding) => {
+  const calculateMaxTableDimensions = (tableOptions) => {
     const maxTableDimensions = {
       width: 0,
       height: 0
@@ -90,13 +95,13 @@ const Diagram = function(parser, params){
     const drawing = svg.newInstance();
     const maxTableDimensions = calculateMaxTableDimensions(props.tableOptions,props.padding);
     const layoutDimensions = layout.calculateDimensions(maxTableDimensions);
-    drawing.width(layoutDimensions.width).height(layoutDimensions.height);
+    drawing.width(layoutDimensions.width+props.padding).height(layoutDimensions.height+props.padding);
 
     return drawing;
   }
 
   const calculatePositions = (layout, props, drawing) => {
-    const maxTableDimensions = calculateMaxTableDimensions(props.tableOptions,props.padding);
+    const maxTableDimensions = calculateMaxTableDimensions(props.tableOptions);
     const matrix = layout.toMatrix();
 
     matrix.forEach((row, yi) => {
@@ -104,7 +109,7 @@ const Diagram = function(parser, params){
         if(!!table){
           const x = xi*maxTableDimensions.width;
           const y = yi*maxTableDimensions.height;
-          table.setPosition(x, y);
+          table.setPosition((props.padding/2) + x, (props.padding/2) + y);
         }
       });
     });
@@ -131,73 +136,14 @@ const Diagram = function(parser, params){
     });
   }
 
-  const drawConnectors = (layout, drawing) => {
+  const drawConnectors = (drawing) => {
     _self.connections.forEach((connection) => {
-      const table1 = _self.findDiagramTableByParsedTable(connection.table1);
-      const table2 = _self.findDiagramTableByParsedTable(connection.table2);
-      if(!!table1 && !!table2){
-        if(table1 !== table2){
-          const t1pos = table1.getClosestPerimeterCoordinate(table2.getLeveledCentrePosition());
-          const t2pos = table2.getClosestPerimeterCoordinate(table1.getLeveledCentrePosition());
-
-          const slope = geometryUtils.slope(t1pos, t2pos);
-          if(geometryUtils.orientation.isMostlyDiagonal(t1pos, t2pos, 0.8)){
-            //This is left here for debugging purposes.
-          }
-          else if(geometryUtils.orientation.isMostlyVertical(t1pos, t2pos, 2)){
-            const xAverage = (t1pos.x + t2pos.x)/2;
-            t1pos.x = xAverage;
-            t2pos.x = xAverage;
-          }
-          else if(geometryUtils.orientation.isMostlyHorizontal(t1pos, t2pos, 0.5)){
-            const yAverage = (t1pos.y + t2pos.y)/2;
-            t1pos.y = yAverage;
-            t2pos.y = yAverage;
-          }
-
-          const textSize = 16;
-          const t1size = connection.t1Cardinality == "*" ? textSize*1.5: textSize;
-          const t2size = connection.t2Cardinality == "*" ? textSize*1.5 : textSize;
-
-          const adjustAmount = textSize*0.8;
-          const asteriskAdjustment = textSize/2;
-          const x1Adjust = t2pos.x >= t1pos.x ? adjustAmount : -1 * adjustAmount;
-          const y1Adjust = (t2pos.y > t1pos.y ? adjustAmount*1.5 : -1 * adjustAmount) + (connection.t1Cardinality == "*" ? asteriskAdjustment : 0);
-          const x2Adjust = t1pos.x >= t2pos.x ? adjustAmount : -1 * adjustAmount;
-          const y2Adjust = (t1pos.y > t2pos.y ? adjustAmount*1.5 : -1 * adjustAmount) + (connection.t2Cardinality == "*" ? asteriskAdjustment : 0);
-
-          drawing.text({
-            x: t1pos.x + x1Adjust,
-            y: t1pos.y + y1Adjust,
-            'font-family': 'helvetica',
-            'font-size': t1size,
-            stroke : "gray",
-            fill: "gray"
-          }, connection.t1Cardinality);
-
-          drawing.text({
-            x: t2pos.x + x2Adjust,
-            y: t2pos.y + y2Adjust,
-            'font-family': 'helvetica',
-            'font-size': t2size,
-            stroke : "gray",
-            fill: "gray"
-          }, connection.t2Cardinality);
-
-          drawing.line({
-            x1: t1pos.x,
-            y1: t1pos.y,
-            x2: t2pos.x,
-            y2: t2pos.y,
-            stroke:"gray"
-          });
-        }
-      }
+      connection.draw(drawing);
     });
   }
 
   const draw = (layout, props, drawing) => {
-    drawConnectors(layout, drawing);
+    drawConnectors(drawing);
     drawTables(layout, props, drawing);
   }
 

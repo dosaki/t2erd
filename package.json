@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "node --inspect=3001 ./src/t2erd.js -i=test/resources/diagram2.erd -o=diagram2.png",
+    "start": "node --inspect=3001 ./src/t2erd.js -i=test/resources/diagram.erd -o=diagram.png",
     "test": "mocha"
   },
   "dependencies": {
