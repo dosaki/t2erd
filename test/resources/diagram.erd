@@ -1,20 +1,26 @@
-# This is a comment lines
+// This is a comment line
 
-# Below is a table definition
-[user] - u      # This is the name of the table followed by an alias (to be used in the diagram later)
-*id             # This is a primary key
-username        # This is a regular column of a table
+// Below is a table definition
+[user] - u               // This is the name of the table followed by an alias (to be used in the diagram later)
+{                        // Start styling definition
+  background: #96c7ff;   // Table background colour
+  color: #2c4056;        // Table text colour
+  stroke: #385372;       // Table border colour
+}                        // End styling definition
+*id                      // This is a primary key
+username                 // This is a regular column of a table
 hashed_password
 
 [user_info] - i
+{background:#ceffd0;stroke:#4d664e;} // Inline styling definition`
 *id
-+user_id        # This is a foreign key
++user_id        // This is a foreign key
 email
 bio
 date_of_birth
 registered_date
 
-user_info 1--1 user # This is a one to one relationship declaration
+user_info 1--1 user // This is a one to one relationship declaration
 
 [post] - p
 *id
@@ -23,13 +29,13 @@ user_info 1--1 user # This is a one to one relationship declaration
 content
 timestamp
 
-post *--1 post # This is a many to one relationship declaration
+post *--1 post // This is a many to one relationship declaration
 post *--1 user
 
-# below we declare how the tables are laid out via their aliases
+// below we declare how the tables are laid out via their aliases
 |p| |
 |u|i|
 
-# It's also possible to do it with their names, but then it's not as pretty:
-#|post|         |
-#|user|user_info|
+// It's also possible to do it with their names, but then it's not as pretty:
+//|post|         |
+//|user|user_info|

@@ -61,7 +61,10 @@ const Diagram = function(parser, params){
       }
     };
     parser.tables.forEach((table) => {
-      _self.tables.push(new DiagramTable(table, parser.relationships, _properties.tableOptions, _labelFonts));
+      const styles = parser.styles.filter((style) => {
+        return style.table.name === table.name;
+      });
+      _self.tables.push(new DiagramTable(table, parser.relationships, _properties.tableOptions, _labelFonts, styles));
     });
     parser.relationships.forEach((connection) => {
       const table1 = _self.findDiagramTableByParsedTable(connection.table1);

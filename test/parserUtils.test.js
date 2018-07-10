@@ -5,8 +5,8 @@ const utils = require("../src/parser/parser_utils.js");
 
 describe('ParserUtils', function() {
   describe('Detect Comments', function() {
-    it('detect #', function() {
-      const line = "# This is a comment";
+    it('detect //', function() {
+      const line = "// This is a comment";
       assert.equal(utils.isCommentLine(line), true);
     });
     it('detect new line', function() {
@@ -19,8 +19,8 @@ describe('ParserUtils', function() {
       assert.equal(utils.isCommentLine(line), false);
     });
 
-    it('detect regular text with # in the middle', function() {
-      const line = "This is not a comment # This is a comment";
+    it('detect regular text with // in the middle', function() {
+      const line = "This is not a comment // This is a comment";
       assert.equal(utils.isCommentLine(line), false);
       assert.equal(utils.stripComments(line), "This is not a comment");
     });
@@ -63,7 +63,7 @@ describe('ParserUtils', function() {
     it('Detect columns', function() {
       assert.equal(utils.isColumn("column", 0), true);
       assert.equal(utils.isColumn("column", "Table"), true);
-      assert.equal(utils.isColumn("column # comment", "Table"), true);
+      assert.equal(utils.isColumn("column // comment", "Table"), true);
       assert.equal(utils.isColumn("*column", "Table"), true);
       assert.equal(utils.isColumn("+column", "Table"), true);
     });
@@ -85,6 +85,33 @@ describe('ParserUtils', function() {
       assert.equal(utils.isRelationship("* -- 1"), false);
       assert.equal(utils.isRelationship("*--*"), false);
       assert.equal(utils.isRelationship("*--1"), false);
+    });
+  });
+
+  describe('Style definitions', function(){
+    it('isInlineStyleDefinition', function(){
+      assert.equal(utils.isInlineStyleDefinition("{property:value;}", {name:"MockTable"}), true);
+      assert.equal(utils.isInlineStyleDefinition("{}", {name:"MockTable"}), true);
+      assert.equal(utils.isInlineStyleDefinition("{", {name:"MockTable"}), false);
+      assert.equal(utils.isInlineStyleDefinition("}", {name:"MockTable"}), false);
+      assert.equal(utils.isInlineStyleDefinition("{property:value;}", null), false);
+      assert.equal(utils.isInlineStyleDefinition("{}", null), false);
+    });
+    it('isStartStyleDefinition', function(){
+      assert.equal(utils.isStyleStartDefinition("{", {name:"MockTable"}), true);
+      assert.equal(utils.isStyleStartDefinition("{", null), false);
+      assert.equal(utils.isStyleStartDefinition("}", {name:"MockTable"}), false);
+      assert.equal(utils.isStyleStartDefinition("{", {name:"MockTable"}, true), false);
+      assert.equal(utils.isStyleStartDefinition("{", null, true), false);
+      assert.equal(utils.isStyleStartDefinition("}", {name:"MockTable"}, true), false);
+    });
+    it('isEndStyleDefinition', function(){
+      assert.equal(utils.isStyleEndDefinition("}", {name:"MockTable"}, true), true);
+      assert.equal(utils.isStyleEndDefinition("}", null, true), false);
+      assert.equal(utils.isStyleEndDefinition("{", {name:"MockTable"}, true), false);
+      assert.equal(utils.isStyleEndDefinition("}", {name:"MockTable"}, false), false);
+      assert.equal(utils.isStyleEndDefinition("}", null, false), false);
+      assert.equal(utils.isStyleEndDefinition("{", {name:"MockTable"}, false), false);
     });
   });
 });

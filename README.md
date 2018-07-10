@@ -13,13 +13,14 @@ Currently **Work In Progress** but I guess it's ok to use.
 
 # Usage
 
+## CLI
 As a CLI tool, it automatically converts the ERD into an SVG and then into a PNG. In addition it will print the SVG code to the terminal.
-
-Usage:
 ```
 ./src/t2erd.js -i=/path/to/input.erd -o=/path/to/ouput.png
 ```
+![Outputted ER Diagram](https://github.com/dosaki/t2erd/blob/master/diagram.png)
 
+## Library
 Using as a library:
 ```javascript
 const t2erd = require('./t2erd.js');
@@ -29,13 +30,13 @@ const svgString = t2erd(diagramTextHere);
 # Syntax
 *Borrowed some of the syntax from https://github.com/BurntSushi/erd*
 ## Comments
-Comments start with `#` and are ignored by the parser.
+Comments start with `//` and are ignored by the parser.
 ```
-# Comment
+// Comment
 ```
-Anything to the right of a `#` is also a comment
+Anything to the right of a `//` is also a comment
 ```
-Foo # Comment
+Foo // Comment
 ```
 
 ## Tables
@@ -84,13 +85,13 @@ They can be interrupted by other definitions.
 
 ## Example
 ```
-# Users table that only contains login info
+// Users table that only contains login info
 [user] - u
 *id
 username
 hashed_password
 
-# This one contains other information about the user
+// This one contains other information about the user
 [user_info] - i
 *id
 +user_id
@@ -101,7 +102,7 @@ registered_date
 
 user_info 1--1 user
 
-# Posts (a thread starts on a post without a parent)
+// Posts (a thread starts on a post without a parent)
 [post] - p
 *id
 +poster

@@ -1,6 +1,5 @@
-const COMMENT_CHARACTER = '#';
-const COMMENT_CHARACTER_REGEX = /#(?![^\"]*")/;
-const RELATIONSHIP_LINE = "--";
+const COMMENT_SYMBOL = '//';
+const RELATIONSHIP_LINE = '--';
 const RELATIONSHIP_LINE_REGEX = / (\*|\d+)--(\*|\d+) /;
 const TABLE_CHARACTER = {
   start: '[',
@@ -10,8 +9,12 @@ const KEY_INDICATOR = {
   primary: '*',
   foreign: '+'
 }
-const LAYOUT_LINE = "|";
+const LAYOUT_LINE = '|';
 const TABLE_ALIAS_SEPARATOR = /-(?![^\[]*])/;
+const STYLING_START = '{';
+const STYLING_END = '}';
+const STYLING_PROPERTY_DELIMITER = ';';
+const STYLING_PROPERTY_KEY_VALUE_DELIMITER = ':';
 
 const isTableNameDefinition = (rawLine) => {
   const line = rawLine.trim();
@@ -27,7 +30,7 @@ const findRelationshipLine = (rawLine) => {
 
 const isCommentLine = (rawLine) => {
   const line = rawLine.trim();
-  return (COMMENT_CHARACTER === line[0]) || (line === "");
+  return (line.startsWith(COMMENT_SYMBOL)) || (line === "");
 }
 
 const isLayoutLine = (rawLine) => {
@@ -42,9 +45,40 @@ const isRelationship = (rawLine) => {
   return relationshipLine !== null;
 }
 
-const isColumn = (rawLine, currentTable) => {
+const isInlineStyleDefinition = (rawLine, currentTable) => {
   const line = rawLine.trim();
-  return !isTableNameDefinition(line)
+  return line.startsWith(STYLING_START)
+      && line.endsWith(STYLING_END)
+      && (currentTable === 0 || !!currentTable);
+}
+
+const isStyleStartDefinition = (rawLine, currentTable, inStylingDefinition) => {
+  const line = rawLine.trim();
+  return line.startsWith(STYLING_START)
+      && !isInlineStyleDefinition(rawLine, currentTable)
+      && !inStylingDefinition
+      && (currentTable === 0 || !!currentTable);
+}
+
+const isStyleEndDefinition = (rawLine, currentTable, inStylingDefinition) => {
+  const line = rawLine.trim();
+  return line.startsWith(STYLING_END)
+      && !isInlineStyleDefinition(rawLine, currentTable)
+      && inStylingDefinition
+      && (currentTable === 0 || !!currentTable);
+}
+
+const isStyleProperty = (rawLine, inStylingDefinition) => {
+  const line = rawLine.trim();
+  return inStylingDefinition
+    && line.endsWith(STYLING_PROPERTY_DELIMITER)
+    && line.indexOf(STYLING_PROPERTY_KEY_VALUE_DELIMITER) !== -1;
+}
+
+const isColumn = (rawLine, currentTable, inStylingDefinition) => {
+  const line = rawLine.trim();
+  return !inStylingDefinition
+      && !isTableNameDefinition(line)
       && !isRelationship(line)
       && !isLayoutLine(line)
       && !isCommentLine(line)
@@ -52,7 +86,7 @@ const isColumn = (rawLine, currentTable) => {
 }
 
 const stripComments = (rawLine) => {
-  return rawLine.split(COMMENT_CHARACTER)[0].trim()
+  return rawLine.split(COMMENT_SYMBOL)[0].trim()
 }
 
 
@@ -63,12 +97,20 @@ module.exports.isRelationship = isRelationship;
 module.exports.isColumn = isColumn;
 module.exports.isLayoutLine = isLayoutLine;
 module.exports.stripComments = stripComments;
+module.exports.isInlineStyleDefinition = isInlineStyleDefinition;
+module.exports.isStyleStartDefinition = isStyleStartDefinition;
+module.exports.isStyleEndDefinition = isStyleEndDefinition;
+module.exports.isStyleProperty = isStyleProperty;
 module.exports.constants = {
-  COMMENT_CHARACTER: COMMENT_CHARACTER,
+  COMMENT_SYMBOL: COMMENT_SYMBOL,
   RELATIONSHIP_LINE: RELATIONSHIP_LINE,
   RELATIONSHIP_LINE_REGEX: RELATIONSHIP_LINE_REGEX,
   TABLE_CHARACTER: TABLE_CHARACTER,
   KEY_INDICATOR: KEY_INDICATOR,
   LAYOUT_LINE,
-  TABLE_ALIAS_SEPARATOR
+  TABLE_ALIAS_SEPARATOR,
+  STYLING_START,
+  STYLING_END,
+  STYLING_PROPERTY_DELIMITER,
+  STYLING_PROPERTY_KEY_VALUE_DELIMITER
 };

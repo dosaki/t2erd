@@ -3,8 +3,9 @@ const paramUtils = require('../utils/param_utils.js');
 const geometryUtils = require('../utils/geometry_utils.js');
 const DiagramColumn = require('./diagramColumn.js');
 
-const DiagramTable = function(table, relationships, tableOptions, fontOptions){
+const DiagramTable = function(table, relationships, tableOptions, fontOptions, styles){
   const _self = this;
+  let _style = null;
   let _table = null;
   let _options = null;
   let _parsedRelationships = [];
@@ -14,7 +15,11 @@ const DiagramTable = function(table, relationships, tableOptions, fontOptions){
   _self.name = null;
   _self.columns = null;
 
-  const init = function (table, relationships, tableOptions, fontOptions) {
+  const init = function (table, relationships, tableOptions, fontOptions, styles) {
+    styles.forEach((style) => {
+      style.parse();
+        _style = !_style ? style : _style.merge(style);
+    });
     _table = table;
     _options = tableOptions;
     _fonts = fontOptions;
@@ -124,18 +129,19 @@ const DiagramTable = function(table, relationships, tableOptions, fontOptions){
       height: _self.dimensions.height,
       rx: _options.radius,
       ry: _options.radius,
-      fill: "white",
-      stroke: "gray"
+      fill: (_style && _style.properties && _style.properties.background) || "white",
+      stroke: (_style && _style.properties && _style.properties.stroke) || "gray"
     });
 
     let colY = _y + _options.padding*1.5;
+    const textColour = (_style && _style.properties && _style.properties.color) || "black"
     drawing.text({
       x: _x + _options.padding,
       y: colY,
       'font-family': _fonts.table.font,
       'font-size': _fonts.table.size,
-      fill: "black",
-      stroke: _fonts.table.bold ? "black" : "none"
+      fill: textColour,
+      stroke: _fonts.table.bold ? textColour : "none"
     }, _self.name);
     drawing.line({
       x1: _x,
@@ -150,7 +156,7 @@ const DiagramTable = function(table, relationships, tableOptions, fontOptions){
     return _self.name;
   };
 
-  init(table, relationships, tableOptions, fontOptions);
+  init(table, relationships, tableOptions, fontOptions, styles);
 };
 
 module.exports = DiagramTable;
