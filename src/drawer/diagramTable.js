@@ -32,7 +32,7 @@ const DiagramTable = function(table, relationships, tableOptions, fontOptions, s
     };
     _self.columns = [];
     table.columns.forEach((column) => {
-      _self.columns.push(new DiagramColumn(column, _self, fontOptions));
+      _self.columns.push(new DiagramColumn(column, _self, fontOptions, _style));
     });
     relationships.forEach((relationship) => {
       if(_table.name === relationship.table1 || _table.name === relationship.table2){

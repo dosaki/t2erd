@@ -133,8 +133,9 @@ Each line of a layout can be separated by any other definition and it'll still b
 // Users table that only contains login info
 [user] - u
 {
-  background:yellow;
-  stroke:red;
+  background: #96c7ff;
+  stroke: #385372;
+  color: #2c4056;
 }
 *id
 username
@@ -142,7 +143,7 @@ hashed_password
 
 // This one contains other information about the user
 [user_info] - i
-{background:blue;}
+{background:#ceffd0;stroke:#4d664e;}
 *id
 +user_id
 email
