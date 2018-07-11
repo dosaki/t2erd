@@ -5,7 +5,7 @@ const DiagramColumn = function(parsedColumn, table, fontOptions, style){
   let _column = null;
   let _table = null;
   let _font = null;
-  const _style = null;
+  let _style = null;
   _self.name = null;
 
   const init = function (parsedColumn, table, fontOptions, style) {
