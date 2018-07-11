@@ -22,7 +22,6 @@ const Style = function(table, line){
 
   const isValidProperty = (property) => {
     const keyValue = property.trim().split(parserUtils.constants.STYLING_PROPERTY_KEY_VALUE_DELIMITER);
-    console.log(keyValue);
     return keyValue.length == 2 && keyValue[0].trim() !== "" && keyValue[1].trim() !== "";
   }
 
