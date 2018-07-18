@@ -1,3 +1,7 @@
+#!/usr/bin/env node
+
+'use strict';
+
 // Text to ERD
 const minimist = require('minimist');
 const Parser = require("./parser/parser.js");

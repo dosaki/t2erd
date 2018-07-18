@@ -1,7 +1,12 @@
 {
   "name": "t2erd",
+  "description": "Text 2 ER Diagram",
   "version": "0.1.0",
   "private": true,
+  "main": "./src/t2erd.js",
+  "bin": {
+    "t2erd": "./src/t2erd.js"
+  },
   "scripts": {
     "start": "node --inspect=3001 ./src/t2erd.js -i=test/resources/diagram.erd -o=diagram.png",
     "test": "mocha"
