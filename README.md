@@ -1,11 +1,9 @@
 # Text 2 ER Diagram
-Currently **Work In Progress** but I guess it's ok to use.
 
-## To do:
+## Features:
   - [x] Draw tables
   - [x] Draw relationships
   - [x] Draw self-referential relationships
-  - [ ] Support relationship declarations via table aliases
   - [x] Support colours
   - [x] Support custom positions
   - [ ] Support custom table dimensions
@@ -15,15 +13,29 @@ Currently **Work In Progress** but I guess it's ok to use.
 
 ## CLI
 As a CLI tool, it automatically converts the ERD into an SVG and then into a PNG. In addition it will print the SVG code to the terminal.
+
+### From source
 ```
-./src/t2erd.js -i=/path/to/input.erd -o=/path/to/ouput.png
+git clone https://github.com/dosaki/t2erd
+node ./t2erd/src/t2erd.js -i=/path/to/input.erd -o=/path/to/ouput.png
+```
+
+### Form NPM
+or if installed globally via
+```
+npm install -g t2erd
+t2erd -i=/path/to/input.erd -o=/path/to/ouput.png
 ```
 
 ## Library
 Using as a library:
 ```javascript
 const t2erd = require('./t2erd.js');
-const svgString = t2erd(diagramTextHere);
+const diagramText = `
+[some_table]
+some_column
+`
+const svgString = t2erd(diagramText).toString();
 ```
 
 # Syntax
