@@ -1,7 +1,7 @@
 {
   "name": "t2erd",
   "description": "Text 2 ER Diagram",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "./src/t2erd.js",
   "bin": {
     "t2erd": "./src/t2erd.js"
