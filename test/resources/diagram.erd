@@ -12,7 +12,7 @@ username                 // This is a regular column of a table
 hashed_password
 
 [user_info] - i
-{background:#ceffd0;stroke:#4d664e;} // Inline styling definition
+//{background:#ceffd0;stroke:#4d664e;} // Inline styling definition
 *id
 +user_id        // This is a foreign key
 email

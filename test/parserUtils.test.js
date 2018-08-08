@@ -46,6 +46,7 @@ describe('ParserUtils', function() {
       assert.equal(utils.isTableNameDefinition("[[Table.1]]"), true);
       assert.equal(utils.isTableNameDefinition("[Table"), false);
       assert.equal(utils.isTableNameDefinition("Table]"), false);
+      assert.equal(utils.isTableNameDefinition("[Table] - tt"), true);
     });
   });
 
