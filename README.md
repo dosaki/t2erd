@@ -12,7 +12,7 @@
 # Usage
 
 ## CLI
-As a CLI tool, it automatically converts the ERD into an SVG (use [t2erd-svg https://github.com/dosaki/t2erd-svg] to convert to png instead). In addition it will print the SVG code to the terminal.
+As a CLI tool, it automatically converts the ERD into an SVG (use [t2erd-svg](https://github.com/dosaki/t2erd-svg) to convert to png instead). In addition it will print the SVG code to the terminal.
 
 ### From source
 ```
