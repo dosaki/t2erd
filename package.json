@@ -7,7 +7,7 @@
     "t2erd": "./src/t2erd.js"
   },
   "scripts": {
-    "start": "node --inspect=3001 ./src/t2erd.js -i=test/resources/diagram.erd -o=diagram.png",
+    "start": "node --inspect=3001 ./src/t2erd.js -i=test/resources/diagram.erd",
     "test": "mocha"
   },
   "repository": "https://github.com/dosaki/t2erd",

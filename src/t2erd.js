@@ -10,7 +10,6 @@ const fs = require('fs');
 
 const argv = minimist(process.argv.slice(2));
 const input = argv.i;
-const output = argv.o;
 
 if(!!input){
   fs.readFile(input, 'utf8', (err, data) => {
