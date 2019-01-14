@@ -24,7 +24,7 @@ node ./t2erd/src/t2erd.js -i=/path/to/input.erd
 or if installed globally via
 ```
 npm install -g t2erd
-t2erd -i=/path/to/input.erd
+t2erd -i /path/to/input.erd
 ```
 
 ## Library
