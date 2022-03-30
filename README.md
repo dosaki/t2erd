@@ -20,7 +20,7 @@ git clone https://github.com/dosaki/t2erd
 node ./t2erd/src/t2erd.js -i=/path/to/input.erd
 ```
 
-### Form NPM
+### From NPM
 or if installed globally via
 ```
 npm install -g t2erd
